@@ -1,0 +1,3 @@
+ftp://user:password@ftp.site.com/home/test/someFile.txt
+https://www.google.co.in/logos/doodles/2017/cassini-spacecraft-dives-between-saturn-and-its-rings-5717425520640000-law.gif
+sftp://user:password@sftp:sftp.site.com/ending.jpg
