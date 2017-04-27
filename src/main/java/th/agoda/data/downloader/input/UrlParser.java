@@ -10,6 +10,10 @@ import th.agoda.data.downloader.enums.ProtoCol;
 @Component
 public class UrlParser {
 
+	private static final int DEFAULT_FTP_PORT_NUMBER = 21;
+
+	private static final int DEFAULT_SFTP_PORT_NUMBER = 22;
+
 	UrlBean parse(String urlString) {
 		UrlBean urlBean = new UrlBean();
 		if (StringUtils.isBlank(urlString)) {
@@ -20,6 +24,12 @@ public class UrlParser {
 			urlBean.setUri(urlString);
 			urlBean.setProtocol(ProtoCol.valueOfProtocolName(url.getScheme()));
 			urlBean.setHostname(url.getHost());
+			if (ProtoCol.FTP.equals(urlBean.getProtocol())) {
+				urlBean.setPort(url.getPort() == -1 ? DEFAULT_FTP_PORT_NUMBER : url.getPort());
+			}
+			if (ProtoCol.SFTP.equals(urlBean.getProtocol())) {
+				urlBean.setPort(url.getPort() == -1 ? DEFAULT_SFTP_PORT_NUMBER : url.getPort());
+			}
 			urlBean.setRemoteFileName(url.getPath());
 			if (url.getUserInfo() != null) {
 				String userInfo = url.getUserInfo();

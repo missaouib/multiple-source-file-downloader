@@ -50,26 +50,56 @@ public class UrlParserTest {
 	}
 
 	@Test
-	public void testForFtpUrl() {
+	public void testForFtpUrlWithoutPort() {
 		String urlString = "ftp://user:password@ftp.site.com/home/test/someFile.txt";
 		UrlBean urlBean = urlParser.parse(urlString);
 
 		Assert.assertEquals(ProtoCol.FTP, urlBean.getProtocol());
 		Assert.assertEquals("ftp.site.com", urlBean.getHostname());
 		Assert.assertEquals(urlString, urlBean.getUri());
+		Assert.assertEquals(21, urlBean.getPort());
 		Assert.assertEquals("user", urlBean.getUsername());
 		Assert.assertEquals("password", urlBean.getPassword());
 		Assert.assertEquals("/home/test/someFile.txt", urlBean.getRemoteFileName());
 	}
 
 	@Test
-	public void testForSftpUrl() {
+	public void testForFtpUrlWithPort() {
+		String urlString = "ftp://user:password@ftp.site.com:9999/home/test/someFile.txt";
+		UrlBean urlBean = urlParser.parse(urlString);
+
+		Assert.assertEquals(ProtoCol.FTP, urlBean.getProtocol());
+		Assert.assertEquals("ftp.site.com", urlBean.getHostname());
+		Assert.assertEquals(urlString, urlBean.getUri());
+		Assert.assertEquals(9999, urlBean.getPort());
+		Assert.assertEquals("user", urlBean.getUsername());
+		Assert.assertEquals("password", urlBean.getPassword());
+		Assert.assertEquals("/home/test/someFile.txt", urlBean.getRemoteFileName());
+	}
+
+	@Test
+	public void testForSftpUrlWithoutPort() {
 		String urlString = "sftp://user:password@sftp.site.com/home/test/someFile.txt";
 		UrlBean urlBean = urlParser.parse(urlString);
 
 		Assert.assertEquals(ProtoCol.SFTP, urlBean.getProtocol());
 		Assert.assertEquals("sftp.site.com", urlBean.getHostname());
 		Assert.assertEquals(urlString, urlBean.getUri());
+		Assert.assertEquals(22, urlBean.getPort());
+		Assert.assertEquals("user", urlBean.getUsername());
+		Assert.assertEquals("password", urlBean.getPassword());
+		Assert.assertEquals("/home/test/someFile.txt", urlBean.getRemoteFileName());
+	}
+
+	@Test
+	public void testForSftpUrlWithPort() {
+		String urlString = "sftp://user:password@sftp.site.com:9999/home/test/someFile.txt";
+		UrlBean urlBean = urlParser.parse(urlString);
+
+		Assert.assertEquals(ProtoCol.SFTP, urlBean.getProtocol());
+		Assert.assertEquals("sftp.site.com", urlBean.getHostname());
+		Assert.assertEquals(urlString, urlBean.getUri());
+		Assert.assertEquals(9999, urlBean.getPort());
 		Assert.assertEquals("user", urlBean.getUsername());
 		Assert.assertEquals("password", urlBean.getPassword());
 		Assert.assertEquals("/home/test/someFile.txt", urlBean.getRemoteFileName());

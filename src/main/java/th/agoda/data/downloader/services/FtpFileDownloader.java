@@ -2,6 +2,7 @@ package th.agoda.data.downloader.services;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class FtpFileDownloader implements FileDownloader {
 				throw new RuntimeException("Ftp connection cannot be established for user "+username);
 			}
 
-			String fileName = outputFilenameCreator.create(hostName, getFileName(urlBean.getRemoteFileName()));
+			String fileName = outputFilenameCreator.create(hostName, FilenameUtils.getName(urlBean.getRemoteFileName()));
 			FileOutputStream fileOutputStream = new FileOutputStream(fileName);
 			boolean download = ftpClient.retrieveFile(urlBean.getRemoteFileName(), fileOutputStream);
 			if (!download) {
@@ -41,9 +42,5 @@ public class FtpFileDownloader implements FileDownloader {
 			//LOG.error
 			throw new RuntimeException("Not able to connect to FTP host. Please check the hostname "+hostName + ", exception : "+e.getMessage());
 		}
-	}
-
-	private String getFileName(String remoteFullFilePath) {
-		return remoteFullFilePath.substring((remoteFullFilePath.lastIndexOf("\\") + 1), remoteFullFilePath.length());
 	}
 }
