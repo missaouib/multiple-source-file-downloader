@@ -1,4 +1,4 @@
-package th.agoda.data.downloader.services;
+package th.agoda.data.downloader.logic;
 
 import th.agoda.data.downloader.beans.UrlBean;
 

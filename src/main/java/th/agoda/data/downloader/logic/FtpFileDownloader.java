@@ -1,7 +1,8 @@
-package th.agoda.data.downloader.services;
+package th.agoda.data.downloader.logic;
 
 import java.io.IOException;
 import java.io.InputStream;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import th.agoda.data.downloader.beans.UrlBean;
 import th.agoda.data.downloader.output.OutputFileWriter;
 
 @Component
+@Slf4j
 public class FtpFileDownloader implements FileDownloader {
 
 	@Autowired
@@ -26,7 +28,8 @@ public class FtpFileDownloader implements FileDownloader {
 			String password = urlBean.getPassword();
 			boolean isLoggedIn = ftpClient.login(username, password);
 			if (!isLoggedIn) {
-				throw new RuntimeException("Ftp connection cannot be established for user "+username);
+				log.error("FTP authentication failure for user {} ", username);
+				return;
 			}
 			InputStream inputStream = ftpClient.retrieveFileStream(urlBean.getRemoteFileName());
 			outputFileWriter.saveFile(urlBean, inputStream);

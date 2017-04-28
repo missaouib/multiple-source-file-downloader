@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import th.agoda.data.downloader.beans.UrlBean;
+import th.agoda.data.downloader.logic.SftpFileDownloader;
 
 //FIXME: verify this UT?
 @RunWith(SpringRunner.class)

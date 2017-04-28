@@ -1,4 +1,4 @@
-package th.agoda.data.downloader.services;
+package th.agoda.data.downloader.logic;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -48,9 +48,9 @@ public class SftpFileDownloader implements FileDownloader {
 				session.disconnect();
 			}
 		} catch (JSchException e) {
-			e.printStackTrace();
+			throw new RuntimeException("JSchException caught at SftpFileDownloader. Exception message: "+e.getMessage());
 		} catch (SftpException e) {
-			e.printStackTrace();
+			throw new RuntimeException("SftpException caught at SftpFileDownloader. Exception message: "+e.getMessage());
 		}
 	}
 }

@@ -1,14 +1,16 @@
 package th.agoda.data.downloader.common;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import th.agoda.data.downloader.enums.ProtoCol;
-import th.agoda.data.downloader.services.FileDownloader;
-import th.agoda.data.downloader.services.FtpFileDownloader;
-import th.agoda.data.downloader.services.HttpFileDownloader;
-import th.agoda.data.downloader.services.SftpFileDownloader;
+import th.agoda.data.downloader.logic.FileDownloader;
+import th.agoda.data.downloader.logic.FtpFileDownloader;
+import th.agoda.data.downloader.logic.HttpFileDownloader;
+import th.agoda.data.downloader.logic.SftpFileDownloader;
 
 @Component
+@Slf4j
 public class FileDownloaderFactory {
 
 	@Autowired
@@ -30,7 +32,8 @@ public class FileDownloaderFactory {
 			case SFTP:
 				return sftpFileDownloader;
 			default: //log error
-				throw new RuntimeException("Not matching donwloader types found");
+				log.error("Not matching protocol found. Protocol is {} ", protoCol);
+				throw new RuntimeException("Not matching downloader types found");
 		}
 
 

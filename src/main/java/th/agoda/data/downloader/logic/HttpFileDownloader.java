@@ -1,6 +1,7 @@
-package th.agoda.data.downloader.services;
+package th.agoda.data.downloader.logic;
 
 import java.io.ByteArrayInputStream;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import th.agoda.data.downloader.output.OutputFileWriter;
 //FIXME: Configure logging,
 // FIXME: Fix timeout, huge file download etc
 @Component
+@Slf4j
 public class HttpFileDownloader implements FileDownloader {
 
 	@Autowired
@@ -29,9 +31,15 @@ public class HttpFileDownloader implements FileDownloader {
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
 		ResponseEntity<byte[]> response = restTemplate.exchange(urlBean.getUri(), HttpMethod.GET, entity, byte[].class);
-		if (response.getStatusCode() == HttpStatus.OK) {
-			outputFileWriter.saveFile(urlBean, new ByteArrayInputStream(response.getBody()));
+		if (response == null || response.getStatusCode() == null) {
+			log.error("Response from HTTP URL {} is null");
+			return;
 		}
+		if (response.getStatusCode() != HttpStatus.OK) {
+			log.error("Invalid response status code from HTTP URL {} is {} ", urlBean.getUri(), response.getStatusCode());
+			return;
+		}
+		outputFileWriter.saveFile(urlBean, new ByteArrayInputStream(response.getBody()));
 	}
 
 }

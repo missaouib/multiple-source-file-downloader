@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import th.agoda.data.downloader.beans.UrlBean;
 import th.agoda.data.downloader.enums.ProtoCol;
+import th.agoda.data.downloader.logic.HttpFileDownloader;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

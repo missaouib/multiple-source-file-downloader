@@ -6,12 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import th.agoda.data.downloader.beans.UrlBean;
 
 @Component
+@Slf4j
 public class OutputFileWriter {
 
 	@Autowired
@@ -31,6 +33,7 @@ public class OutputFileWriter {
 			}
 			bufferedInputStream.close();
 			bufferedOutputStream.close();
+			log.info("File saved to location {} from URL {} ", fileName, urlBean.getUri());
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Could not create file at disk, Exception : "+e.getMessage());
 		} catch (IOException e) {

@@ -2,12 +2,14 @@ package th.agoda.data.downloader.input;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import th.agoda.data.downloader.beans.UrlBean;
 import th.agoda.data.downloader.enums.ProtoCol;
 
 @Component
+@Slf4j
 public class UrlParser {
 
 	private static final int DEFAULT_FTP_PORT_NUMBER = 21;
@@ -40,6 +42,7 @@ public class UrlParser {
 				}
 			}
 		} catch (URISyntaxException e) {
+			log.error("Invalid URL. Cannot parse URI {} ");
 			throw new RuntimeException("Exception while parsing the URL. Exception message : "+e.getMessage());
 		}
 		return urlBean;
