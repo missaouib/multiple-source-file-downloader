@@ -31,7 +31,6 @@ public class SftpFileDownloader implements FileDownloader {
 
 			Session session = jSch.getSession(urlBean.getUsername(), urlBean.getHostname(), urlBean.getPort());
 			session.setPassword(urlBean.getPassword());
-			session.setConfig(config);
 			session.connect();
 
 			Channel channel = session.openChannel("sftp");
@@ -41,6 +40,13 @@ public class SftpFileDownloader implements FileDownloader {
 			InputStream inputStream = channelSftp.get(urlBean.getRemoteFileName());
 
 			outputFileWriter.saveFile(urlBean, inputStream);
+
+			if (channel.isConnected()) {
+				channel.disconnect();
+			}
+			if (session.isConnected()) {
+				session.disconnect();
+			}
 		} catch (JSchException e) {
 			e.printStackTrace();
 		} catch (SftpException e) {
