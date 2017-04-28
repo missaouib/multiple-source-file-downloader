@@ -8,13 +8,13 @@ import th.agoda.data.downloader.common.FileDownloaderFactory;
 import th.agoda.data.downloader.input.InputUrlFileReader;
 
 @Component
-public class MainFileDownloader implements CommandLineRunner {
+public class FileDownloaderRunner implements CommandLineRunner {
 
 	private InputUrlFileReader inputUrlFileReader;
 
 	private FileDownloaderFactory fileDownloaderFactory;
 
-	public MainFileDownloader(InputUrlFileReader inputUrlFileReader, FileDownloaderFactory fileDownloaderFactory) {
+	public FileDownloaderRunner(InputUrlFileReader inputUrlFileReader, FileDownloaderFactory fileDownloaderFactory) {
 		this.inputUrlFileReader = inputUrlFileReader;
 		this.fileDownloaderFactory = fileDownloaderFactory;
 	}
