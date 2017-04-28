@@ -20,7 +20,7 @@ public class FileDownloaderService {
 		try {
 			fileDownloaderFactory.get(protoCol).readFile(urlBean);
 		} catch (RuntimeException e) {
-			log.warn("Exception caught while downloading from urlBean {} ", urlBean);
+			log.warn("RuntimeException caught while downloading from urlBean {}, exception message = {} ", urlBean, e.getMessage());
 		} catch (Exception e) {
 			log.error("Unhandled exception caught. Exception message: "+e.getMessage());
 			throw e;

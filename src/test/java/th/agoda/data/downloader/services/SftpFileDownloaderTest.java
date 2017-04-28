@@ -1,65 +1,41 @@
 package th.agoda.data.downloader.services;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.sshd.SshServer;
-import org.apache.sshd.common.NamedFactory;
-import org.apache.sshd.server.Command;
-import org.apache.sshd.server.CommandFactory;
-import org.apache.sshd.server.command.ScpCommandFactory;
-import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
-import org.apache.sshd.server.sftp.SftpSubsystem;
-import org.junit.After;
-import org.junit.Before;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import th.agoda.data.downloader.beans.UrlBean;
 import th.agoda.data.downloader.logic.SftpFileDownloader;
 
-//FIXME: verify this UT?
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
+@Slf4j
 public class SftpFileDownloaderTest {
 
-	@Autowired
+	@Mock
+	private JSch jSch;
+
+	@InjectMocks
 	private SftpFileDownloader sftpFileDownloader;
 
-	private SshServer sshServer;
-
-	@Before
-	public void setUp() throws IOException {
-		sshServer = SshServer.setUpDefaultServer();
-		sshServer.setPort(22999);
-		sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("hostkey.ser"));
-		sshServer.setPasswordAuthenticator((username, password, serverSession) -> true);
-		CommandFactory commandFactory = command -> {
-			System.out.println("Command : "+command);
-			return null;
-		};
-		sshServer.setCommandFactory(new ScpCommandFactory(commandFactory));
-		List<NamedFactory<Command>> namedFactories = new ArrayList<>();
-		namedFactories.add(new SftpSubsystem.Factory());
-		sshServer.setSubsystemFactories(namedFactories);
-		sshServer.start();
-	}
-
-	@After
-	public void tearDown() throws InterruptedException {
-		sshServer.stop();
-	}
-
 	@Test
-	public void testSftpDownload() {
-		UrlBean urlBean = new UrlBean();
-		urlBean.setHostname("localhost");
-		urlBean.setPort(22999);
-		urlBean.setUsername("remote-username");
-		urlBean.setUsername("remote-password");
-		sftpFileDownloader.readFile(urlBean);
+	public void testReadFileWhenJschSessionfails() throws JSchException {
+		Mockito.doThrow(JSchException.class).when(jSch).getSession(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt());
+		UrlBean urlBean = Mockito.mock(UrlBean.class);
+
+		try {
+			sftpFileDownloader.readFile(urlBean);
+			Assert.fail("RuntimeException expected");
+		} catch (RuntimeException e) {
+			log.error("RuntimeException at SftpFileDownloaderTest.testReadFileWhenJschSessionfails");
+		} catch (Exception e) {
+			Assert.fail("RuntimeException expected");
+		}
 	}
 
 }

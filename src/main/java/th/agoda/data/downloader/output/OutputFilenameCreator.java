@@ -2,6 +2,7 @@ package th.agoda.data.downloader.output;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import th.agoda.data.downloader.properties.OutputDirectoryProperties;
 
 @Component
 public class OutputFilenameCreator {

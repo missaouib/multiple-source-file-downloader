@@ -2,63 +2,93 @@ package th.agoda.data.downloader.services;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Before;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.ftp.FTPClient;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockftpserver.fake.FakeFtpServer;
-import org.mockftpserver.fake.UserAccount;
-import org.mockftpserver.fake.filesystem.DirectoryEntry;
-import org.mockftpserver.fake.filesystem.FileEntry;
-import org.mockftpserver.fake.filesystem.FileSystem;
-import org.mockftpserver.fake.filesystem.WindowsFakeFileSystem;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import th.agoda.data.downloader.beans.UrlBean;
 import th.agoda.data.downloader.logic.FtpFileDownloader;
+import th.agoda.data.downloader.output.OutputFileWriter;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
+@Slf4j
 public class FtpFileDownloaderTest {
 
-	private static final int FTP_PORT_NUMBER = 21;
-	private FakeFtpServer fakeFtpServer;
+	@Mock
+	private FTPClient ftpClient;
 
-	@Before
-	public void setUp() throws IOException {
-		fakeFtpServer = new FakeFtpServer();
-		fakeFtpServer.addUserAccount(new UserAccount("user", "password", "C:\\data"));
+	@Mock
+	private OutputFileWriter outputFileWriter;
 
-		FileSystem fileSystem = new WindowsFakeFileSystem();
-		fileSystem.add(new DirectoryEntry("C:\\data"));
-		FileEntry fileEntry = new FileEntry("C:\\data\\testData.jpg");
-		InputStream inputStream = getClass().getResourceAsStream("/ftp/testData.jpg");
-		fileEntry.setContents(IOUtils.toByteArray(inputStream));
-		fileSystem.add(fileEntry);
-		fakeFtpServer.setFileSystem(fileSystem);
-		fakeFtpServer.setServerControlPort(FTP_PORT_NUMBER);
-
-		fakeFtpServer.start();
-	}
-
-	@After
-	public void tearDown() {
-		fakeFtpServer.stop();
-	}
-
-	@Autowired
+	@InjectMocks
 	private FtpFileDownloader ftpFileDownloader;
 
 	@Test
-	public void testFtpDownload() {
-		UrlBean urlBean = new UrlBean();
-		urlBean.setHostname("localhost");
-		urlBean.setPort(FTP_PORT_NUMBER);
-		urlBean.setRemoteFileName("C:\\data\\testData.jpg");
-		urlBean.setUsername("user");
-		urlBean.setPassword("password");
+	public void testReadFileForConnectionException() throws IOException {
+		Mockito.doThrow(IOException.class).when(ftpClient).connect(Mockito.anyString(), Mockito.anyInt());
+		try {
+			UrlBean urlBean = Mockito.mock(UrlBean.class);
+			ftpFileDownloader.readFile(urlBean);
+			Assert.fail("RuntimeException expected");
+		} catch (RuntimeException e) {
+			log.error("RuntimeException at FtpFileDownloaderTest.testReadFileForConnectionException ");
+		} catch (Exception e) {
+			Assert.fail("RuntimeException expected");
+		}
+	}
+
+	@Test
+	public void testReadFileForNotLoggedIn() throws IOException {
+		Mockito.doNothing().when(ftpClient).connect(Mockito.anyString(), Mockito.anyInt());
+		Mockito.when(ftpClient.login(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+		UrlBean urlBean = Mockito.mock(UrlBean.class);
+
 		ftpFileDownloader.readFile(urlBean);
+
+		Mockito.verify(ftpClient, Mockito.times(0)).retrieveFileStream(Mockito.anyString());
+		Mockito.verify(outputFileWriter, Mockito.times(0)).saveFile(Mockito.any(UrlBean.class), Mockito.any(InputStream.class));
+	}
+
+	@Test
+	public void testReadFileForFtpRetrieveException() throws IOException {
+		Mockito.doNothing().when(ftpClient).connect(Mockito.anyString(), Mockito.anyInt());
+		Mockito.when(ftpClient.login(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+		Mockito.doThrow(IOException.class).when(ftpClient).retrieveFileStream(Mockito.anyString());
+
+		UrlBean urlBean = Mockito.mock(UrlBean.class);
+
+		try {
+			ftpFileDownloader.readFile(urlBean);
+			Assert.fail("RuntimeException Expected");
+		} catch (RuntimeException e) {
+			log.error("RuntimeException at FtpFileDownloaderTest.testReadFileForFtpRetrieveException ");
+			Mockito.verify(outputFileWriter, Mockito.times(0)).saveFile(Mockito.any(UrlBean.class), Mockito.any(InputStream.class));
+		} catch (Exception e) {
+			Assert.fail("RuntimeException Expected");
+		}
+	}
+
+	@Test
+	public void testReadFileWhenSavingOutputFile() throws IOException {
+		Mockito.doNothing().when(ftpClient).connect(Mockito.anyString(), Mockito.anyInt());
+		Mockito.when(ftpClient.login(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+		Mockito.when(ftpClient.retrieveFileStream(Mockito.anyString())).thenReturn(getClass().getResourceAsStream("/ftp/testData.jpg"));
+		Mockito.doThrow(IOException.class).when(outputFileWriter).saveFile(Mockito.any(UrlBean.class), Mockito.any(InputStream.class));
+
+		UrlBean urlBean = Mockito.mock(UrlBean.class);
+
+		try {
+			ftpFileDownloader.readFile(urlBean);
+			Assert.fail("RuntimeException Expected");
+		} catch (RuntimeException e) {
+			log.error("RuntimeException at FtpFileDownloaderTest.testReadFileWhenSavingOutputFile ");
+		} catch (Exception e) {
+			Assert.fail("RuntimeException Expected");
+		}
 	}
 }

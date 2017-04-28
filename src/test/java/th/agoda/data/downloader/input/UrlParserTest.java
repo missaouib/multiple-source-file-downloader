@@ -1,5 +1,6 @@
 package th.agoda.data.downloader.input;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import th.agoda.data.downloader.enums.ProtoCol;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class UrlParserTest {
 
 	@Autowired
@@ -22,7 +24,21 @@ public class UrlParserTest {
 			urlParser.parse("");
 			Assert.fail("RuntimeException expected");
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			log.error("Exception message : "+e.getMessage());
+		} catch (Exception e) {
+			Assert.fail("RuntimeException expected");
+		}
+	}
+
+	@Test
+	public void testForNullUrl() {
+		try {
+			urlParser.parse(null);
+			Assert.fail("RuntimeException expected");
+		} catch (RuntimeException e) {
+			log.error("Exception message : "+e.getMessage());
+		} catch (Exception e) {
+			Assert.fail("RuntimeException expected");
 		}
 	}
 
@@ -32,7 +48,9 @@ public class UrlParserTest {
 			urlParser.parse("someScheme://user:password@ftp.site.com/home/test/someFile.txt");
 			Assert.fail("RuntimeException expected");
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			log.error("Exception message : "+e.getMessage());
+		} catch (Exception e) {
+			Assert.fail("RuntimeException expected");
 		}
 	}
 

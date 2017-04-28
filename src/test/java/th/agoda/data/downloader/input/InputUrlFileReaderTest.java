@@ -1,6 +1,7 @@
 package th.agoda.data.downloader.input;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import th.agoda.data.downloader.beans.UrlBean;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class InputUrlFileReaderTest {
 
 	@Autowired
@@ -19,8 +21,7 @@ public class InputUrlFileReaderTest {
 
 	@Test
 	public void testForValidInputUrlFile() {
-		List<UrlBean> urlBeans = inputUrlFileReader.getUrlBeans("/testInputUrlList.txt");
+		List<UrlBean> urlBeans = inputUrlFileReader.getUrlBeans("/data/testInputUrlList.txt");
 		Assert.assertThat(urlBeans.size(), Is.is(3));
-
 	}
 }

@@ -2,6 +2,7 @@ package th.agoda.data.downloader.output;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +38,8 @@ public class OutputFileWriter {
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Could not create file at disk, Exception : "+e.getMessage());
 		} catch (IOException e) {
+			log.error("IOException while saving file {} to disk. Hence deleting the file ", fileName);
+			new File(fileName).delete();
 			throw new RuntimeException("Could not write file to disk, Exception : "+e.getMessage());
 		}
 	}

@@ -32,6 +32,7 @@
 		<jsch.version>0.1.54</jsch.version>
 		<sshd-core.version>0.5.0</sshd-core.version>
 		<lombok.version>1.16.16</lombok.version>
+		<httpclient.version>4.5.3</httpclient.version>
 	</properties>
 
 	<dependencies>
@@ -117,6 +118,11 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

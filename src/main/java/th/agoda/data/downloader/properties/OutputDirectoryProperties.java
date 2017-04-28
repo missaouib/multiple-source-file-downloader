@@ -1,4 +1,4 @@
-package th.agoda.data.downloader.output;
+package th.agoda.data.downloader.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
@@ -19,10 +19,4 @@ public class OutputDirectoryProperties {
 		this.path = path;
 	}
 
-	@Override
-	public String toString() {
-		return "OutputDirectoryProperties{" +
-			   "path='" + path + '\'' +
-			   '}';
-	}
 }
