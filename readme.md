@@ -17,7 +17,7 @@ Development
 Release Notes
 ------
 
-### 1.0.0
+### 0.0.1
   Current version has below features.
   * Download files from HTTP, FTP and SFTP
   * Due to un-availability of valid SFTP host, SFTP downloader might need testing before releasing to host.
