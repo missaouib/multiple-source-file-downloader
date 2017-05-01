@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import th.agoda.data.downloader.beans.UrlBean;
 import th.agoda.data.downloader.logic.SftpFileDownloader;
 
-//FIXME: verify this UT?
+//FIXME: verify this IT?
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SftpFileDownloaderIT {

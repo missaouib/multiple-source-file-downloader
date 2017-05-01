@@ -22,12 +22,15 @@ public class FileDownloaderRunner implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... strings) throws Exception {
+	public void run(String... strings) {
 		List<UrlBean> urlBeans;
 		try {
 			urlBeans = inputUrlFileReader.getUrlBeans("/inputUrlList.txt");
 		} catch (RuntimeException e) {
-			log.error("Exception caught while processing the URL from files {}. Cannot perform file download. ", e.getMessage());
+			log.error("RuntimeException caught while parsing the URL from file {}. Cannot perform file download. ", e.getMessage());
+			return;
+		} catch (Exception e) {
+			log.error("Exception caught while processing the URL from file {}. Cannot perform file download. ", e.getMessage());
 			return;
 		}
 

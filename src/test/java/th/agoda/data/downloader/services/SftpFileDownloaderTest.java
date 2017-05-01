@@ -2,6 +2,7 @@ package th.agoda.data.downloader.services;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class SftpFileDownloaderTest {
 	private SftpFileDownloader sftpFileDownloader;
 
 	@Test
-	public void testReadFileWhenJschSessionfails() throws JSchException {
+	public void testReadFileWhenJschGetSessionThrowsJSchException() throws JSchException {
 		Mockito.doThrow(JSchException.class).when(jSch).getSession(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt());
 		UrlBean urlBean = Mockito.mock(UrlBean.class);
 
@@ -32,10 +33,24 @@ public class SftpFileDownloaderTest {
 			sftpFileDownloader.readFile(urlBean);
 			Assert.fail("RuntimeException expected");
 		} catch (RuntimeException e) {
-			log.error("RuntimeException at SftpFileDownloaderTest.testReadFileWhenJschSessionfails");
+			log.error("RuntimeException at SftpFileDownloaderTest.testReadFileWhenJschGetSessionThrowsJSchException");
 		} catch (Exception e) {
 			Assert.fail("RuntimeException expected");
 		}
 	}
 
+	@Test
+	public void testReadFileWhenJschGetSessionThrowsSftpException() throws JSchException {
+		Mockito.doThrow(SftpException.class).when(jSch).getSession(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt());
+		UrlBean urlBean = Mockito.mock(UrlBean.class);
+
+		try {
+			sftpFileDownloader.readFile(urlBean);
+			Assert.fail("RuntimeException expected");
+		} catch (RuntimeException e) {
+			log.error("RuntimeException at SftpFileDownloaderTest.testReadFileWhenJschGetSessionThrowsSftpException");
+		} catch (Exception e) {
+			Assert.fail("RuntimeException expected");
+		}
+	}
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import th.agoda.data.downloader.beans.UrlBean;
 import th.agoda.data.downloader.output.OutputFileWriter;
 
+//TODO: This need to be tested with realtime SFTP server.
 @Component
 public class SftpFileDownloader implements FileDownloader {
 

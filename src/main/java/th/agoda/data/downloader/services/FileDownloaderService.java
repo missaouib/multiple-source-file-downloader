@@ -22,7 +22,7 @@ public class FileDownloaderService {
 		} catch (RuntimeException e) {
 			log.warn("RuntimeException caught while downloading from urlBean {}, exception message = {} ", urlBean, e.getMessage());
 		} catch (Exception e) {
-			log.error("Unhandled exception caught. Exception message: "+e.getMessage());
+			log.error("Exception caught. while downloading from urlBean {}, exception message = {} "+e.getMessage());
 			throw e;
 		}
 	}
